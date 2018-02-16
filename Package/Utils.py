@@ -7,7 +7,9 @@ def print_data(*data):
     print(date, data)
 
 
-def sleep(secs):
+def sleep(secs, ident):
     for x in range(secs):
-        print('sleeping, secs: %d/%d' % (x, secs), end="\r")
+        if x % 10 == 0:
+            print("id:", ident, "sleeping %d/%d" % (x, secs))
+
         time.sleep(1)
