@@ -50,13 +50,16 @@ def prepare_group_photos():
 
 def switch_photos(group):
     uploaded_photos = group.uploaded_photos
-    while len(uploaded_photos) > 0:
+    if len(uploaded_photos) == 0:
+        print_data("no photos for group:", group.group_id)
+        return
+    while True:
         for uploaded_photo in uploaded_photos:
             try:
                 save_photo(uploaded_photo)
                 sleep(repeat_interval, group.group_id)
             except Exception as e:
-                print_data(e, '\n')
+                print_data(e)
                 sleep(error_interval, group.group_id)
 
 
