@@ -1,18 +1,42 @@
 import glob
 import os
 import threading
+import configparser
 
-from Package.Config import *
 from Package.Group import Group
 from Package.UploadedPhoto import UploadedPhoto
 from Package.Utils import print_data, sleep
 from Package.VkApi import get_group_cover_photo_upload_server, upload_photo, save_photo
 
+photos_dir_name = 'photos'
+repeat_interval = 60
+error_interval = repeat_interval * 10
+
 
 def get_groups():
-    return [
-        Group("1", 123, "123123")  # example
-    ]
+    groups = []
+    config = configparser.ConfigParser()
+    config.read("Config.ini")
+    sections = config.sections()
+    for section_name in sections:
+        if section_name == 'Example':
+            continue
+        section = config[section_name]
+        groups.append(Group(
+            section['subdir_name'],
+            section['id'],
+            section['token']
+        ))
+
+    count = len(groups)
+    print('%d groups read from config' % count)
+    if count == 0:
+        raise Exception("at least 1 group should be specified")
+    else:
+        for g in groups:
+            print(g.photos_subdir_name, g.group_id, g.group_token)
+
+    return groups
 
 
 def get_photo_files(path):
